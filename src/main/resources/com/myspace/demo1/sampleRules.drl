@@ -1,0 +1,83 @@
+package com.myspace.demo1;
+
+rule "update status"
+	dialect "mvel"
+	salience 10
+	
+	when
+	    $alert : Switch()
+	    Switch ( dateTime > $alert.dateTime )
+	then
+	    System.out.println("Executed Rule: " + drools.getRule().getName() );
+	    retract( $alert )
+	
+end
+
+rule "alert condition 1"
+	dialect "mvel"
+
+
+    // IF (CYD.CB.552.POS=0 || CYD.DIS.556.POS=0 || (CYD.DIS.553.POS=0 && CYD.DIS.555.POS=0) )
+	when
+	  not Alert(description == "alert condition 1")
+	  (
+	    // CYD.CB.552.POS=0 
+		Switch( site == "CYD", assetType == "CB", asset_id == 552, attribute == "POS", value == false)
+		or
+		// CYD.DIS.556.POS=0
+		Switch( site == "CYD", assetType == "DIS", asset_id == 556, attribute == "POS", value == false)
+        or
+        // CYD.DIS.553.POS=0 && CYD.DIS.555.POS=0
+        (
+            Switch( site == "CYD", assetType == "DIS", asset_id == 553, attribute == "POS", value == false)
+		and
+		// CYD.DIS.556.POS=0
+		    Switch( site == "CYD", assetType == "DIS", asset_id == 555, attribute == "POS", value == false)
+		)
+
+	  )
+
+	then
+		System.out.println("Executed Rule: " + drools.getRule().getName() );
+		// The insert statement is not needed in your demo, only use it for running the Test Scenarios
+		insert( new Alert(true, "alert condition 1" ));
+		
+		// add the notification to the Alert UI below
+end
+
+rule "alert condition 1 eased"
+	dialect "mvel"
+
+
+    // IF (CYD.CB.552.POS=0 || CYD.DIS.556.POS=0 || (CYD.DIS.553.POS=0 && CYD.DIS.555.POS=0) )
+	when
+	   $alert : Alert(description == "alert condition 1")
+	   not (
+	    // CYD.CB.552.POS=0 
+		Switch( site == "CYD", assetType == "CB", asset_id == 552, attribute == "POS", value == false)
+		or
+		// CYD.DIS.556.POS=0
+		Switch( site == "CYD", assetType == "DIS", asset_id == 556, attribute == "POS", value == false)
+        or
+        // CYD.DIS.553.POS=0 && CYD.DIS.555.POS=0
+        (
+            Switch( site == "CYD", assetType == "DIS", asset_id == 553, attribute == "POS", value == false)
+		and
+		// CYD.DIS.556.POS=0
+		    Switch( site == "CYD", assetType == "DIS", asset_id == 555, attribute == "POS", value == false)
+		)
+
+	  )
+
+	then
+		System.out.println("Executed Rule: " + drools.getRule().getName() );
+		// The insert statement is not needed in your demo, only use it for running the Test Scenarios
+		retract( $alert );
+		
+		// add the notification to the Alert UI below
+end
+
+query "get alerts"
+    alert : Alert()
+end
+
