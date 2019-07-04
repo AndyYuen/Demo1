@@ -45,6 +45,11 @@
       <version>7.18.0.Final-redhat-00004</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.myspace</groupId>
+      <artifactId>InitDevice</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

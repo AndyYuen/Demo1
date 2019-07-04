@@ -1,12 +1,42 @@
 package com.myspace.demo1;
 
+import java.util.List;
+
+global com.myspace.mysql.InitDevice initDevice;
+
+rule "init device"
+	dialect "mvel"
+	
+	when
+	    $alert : Alert(description == "INIT")
+	then
+		System.out.println("Executed Rule: " + drools.getRule().getName() );
+	    retract( $alert );
+	    int i = 0;
+		List list = null;
+	  	int limit = 5;
+		do {
+			list = null; // reset list before continuing
+			list = initDevice.readData(limit, limit * i);
+			i += 1;
+			System.out.println("Size of list returned: " + list.size());
+			for (Object obj : list) {
+			    Switch sw = (Switch) obj;
+				System.out.println(sw.getDateTime() + ": " + sw.getSite() + "." + sw.getAssetType() + "." + sw.getAsset_id() +
+						"." + sw.getAttribute() + "." + sw.isValue());
+				insert(sw);
+			}
+		} while ((list != null) && (list.size() == limit))
+	
+end
+	
 rule "update status"
 	dialect "mvel"
 	salience 10
 	
 	when
 	    $alert : Switch()
-	    Switch ( dateTime > $alert.dateTime )
+	    Switch ( site == $alert.site, assetType == $alert.assetType, asset_id == $alert.asset_id, dateTime > $alert.dateTime )
 	then
 	    System.out.println("Executed Rule: " + drools.getRule().getName() );
 	    retract( $alert )
