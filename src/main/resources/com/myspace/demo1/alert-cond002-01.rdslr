@@ -1,0 +1,23 @@
+package com.myspace.demo1;
+
+import java.lang.Number;
+
+rule "alert-cond002-01"
+	dialect "mvel"
+	when
+		There is no alert with description COND002
+		Open Bracket
+		Device $switch1: CYD-CB-552-POS is 0
+		OR
+		Device $switch2: CYD-DIS-556-POS is 0
+		OR
+		Open Bracket
+		Device $switch3: CYD-DIS-553-POS is 0
+		AND
+		Device $switch4: CYD-DIS-555-POS is 0
+		Close Bracket
+		Close Bracket
+	then
+		Log name of this rule
+		Raise alert COND002
+end
