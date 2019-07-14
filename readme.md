@@ -1,4 +1,4 @@
 Repository Init Content
 =======================
 
-Your project description here.
+Sample RHDM project. Work in Progress.
