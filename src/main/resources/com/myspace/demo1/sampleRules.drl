@@ -4,6 +4,11 @@ import java.util.List;
 
 global com.myspace.mysql.InitDevice initDevice;
 
+function boolean toBoolean(int val) {
+    if (val == 0) return false;
+    return true;
+}
+
 rule "init device"
 	dialect "mvel"
 	
@@ -27,7 +32,7 @@ rule "init device"
 				insert(sw);
 			}
 		} while ((list != null) && (list.size() == limit))
-	
+	    initDevice.close();
 end
 	
 rule "update status"
@@ -42,7 +47,7 @@ rule "update status"
 	    retract( $alert )
 	
 end
-
+/*
 rule "alert condition 1"
 	dialect "mvel"
 
@@ -106,7 +111,7 @@ rule "alert condition 1 eased"
 		
 		// add the notification to the Alert UI below
 end
-
+*/
 query "get alerts"
     alert : Alert()
 end
